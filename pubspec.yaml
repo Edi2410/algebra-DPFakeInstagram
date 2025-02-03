@@ -1,4 +1,4 @@
-name: niamu_project
+name: dp_project
 description: "Projekt za kolegij Napredna izrada aplikacija za mobilne uređaje"
 
 publish_to: 'none'
@@ -26,12 +26,24 @@ dependencies:
   freezed_annotation: ^2.4.1
   firebase_core: ^3.6.0
   control_style: ^0.1.0
-  cached_network_image: ^3.4.1
   retrofit: ^4.4.0
   json_annotation: ^4.9.0
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   url_launcher: ^6.3.1
+  google_sign_in: ^6.2.2
+  firebase_database: ^11.2.0
+  intl: ^0.19.0
+  sqflite: ^2.3.3+1
+  cloudinary_flutter: ^1.0.0
+  cloudinary_url_gen: ^1.0.0
+  image_picker: ^1.1.2
+  image_downloader:
+    git:
+      url: https://github.com/tHEO2k17/image_downloader.git
+      ref: master
+  permission_handler: ^11.3.1
+
 
 dev_dependencies:
   flutter_test:

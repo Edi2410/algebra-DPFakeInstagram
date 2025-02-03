@@ -1,10 +1,12 @@
+import 'package:dp_project/feature/photos/presentation/screen/add_new_photo_screen.dart';
+import 'package:dp_project/feature/profile/presentation/screen/change_package_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:niamu_project/feature/auth/presentation/screen/confirm_email_screen.dart';
-import 'package:niamu_project/feature/auth/presentation/screen/reset_password_screen.dart';
-import 'package:niamu_project/feature/auth/presentation/screen/sign_in_screen.dart';
-import 'package:niamu_project/feature/auth/presentation/screen/sign_up_screen.dart';
-import 'package:niamu_project/feature/common/presentation/screen/splash_screen.dart';
-import 'package:niamu_project/feature/common/presentation/screen/home_page_screen.dart';
+import 'package:dp_project/feature/auth/presentation/screen/confirm_email_screen.dart';
+import 'package:dp_project/feature/auth/presentation/screen/reset_password_screen.dart';
+import 'package:dp_project/feature/auth/presentation/screen/sign_in_screen.dart';
+import 'package:dp_project/feature/auth/presentation/screen/sign_up_screen.dart';
+import 'package:dp_project/feature/common/presentation/screen/splash_screen.dart';
+import 'package:dp_project/feature/common/presentation/screen/home_page_screen.dart';
 
 class RouteGenerator {
   static const splashScreen = '/';
@@ -13,6 +15,8 @@ class RouteGenerator {
   static const resetPasswordScreen = '/resetPassword';
   static const verifyEmailScreen = '/verifyEmail';
   static const homePageScreen = '/homePage';
+  static const changePackageScreen = '/changePackage';
+  static const addNewPhotoScreen = '/addNewImage';
 
   RouteGenerator._();
 
@@ -37,6 +41,16 @@ class RouteGenerator {
         return MaterialPageRoute(
           settings: settings,
           builder: (_) => const VerifyEmailScreen(),
+        );
+      case changePackageScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const ChangePackageScreen(),
+        );
+      case addNewPhotoScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const AddNewPhotoScreen(),
         );
 
       default:

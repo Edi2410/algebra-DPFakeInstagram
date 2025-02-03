@@ -1,9 +1,8 @@
 import 'package:control_style/control_style.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:niamu_project/core/style/style_extensions.dart';
+import 'package:dp_project/core/style/style_extensions.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
 class CustomTextField extends HookConsumerWidget {
@@ -11,11 +10,13 @@ class CustomTextField extends HookConsumerWidget {
   final String formControlName;
   final Map<String, String Function(Object)>? validationMessages;
   final bool isPasswordField;
+  final Function(FormControl<dynamic>)? onChanged;
 
   const CustomTextField({
     super.key,
     required this.labelText,
     required this.formControlName,
+    this.onChanged,
     this.validationMessages,
     this.isPasswordField = false,
   });
@@ -29,7 +30,7 @@ class CustomTextField extends HookConsumerWidget {
           autocorrect: !isPasswordField,
           obscureText: isPasswordField,
           enableSuggestions: !isPasswordField,
-
+          onChanged: onChanged,
           decoration: InputDecoration(
             errorStyle: context.textError.copyWith(
               color: context.errorColor,

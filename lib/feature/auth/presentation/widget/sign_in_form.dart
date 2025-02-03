@@ -1,10 +1,11 @@
+import 'package:dp_project/feature/common/presentation/widget/custom_secondary_button.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:niamu_project/core/di.dart';
-import 'package:niamu_project/core/route_generator.dart';
-import 'package:niamu_project/core/style/style_extensions.dart';
-import 'package:niamu_project/feature/common/presentation/widget/custom_primary_button.dart';
-import 'package:niamu_project/feature/common/presentation/widget/custom_text_field.dart';
+import 'package:dp_project/core/di.dart';
+import 'package:dp_project/core/route_generator.dart';
+import 'package:dp_project/core/style/style_extensions.dart';
+import 'package:dp_project/feature/common/presentation/widget/custom_primary_button.dart';
+import 'package:dp_project/feature/common/presentation/widget/custom_text_field.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
 class SignInForm extends HookConsumerWidget {
@@ -12,9 +13,6 @@ class SignInForm extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final authState = ref.watch(authNotifierProvider);
-
-
 
     final formGroup = FormGroup({
       'email': FormControl<String>(
@@ -77,6 +75,34 @@ class SignInForm extends HookConsumerWidget {
               }
             },
           ),
+          const SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: 120,
+                child: CustomSecondaryButton(
+                  labelText: 'Google',
+                  onPressed: () {
+                    ref.read(authNotifierProvider.notifier).signInWithGoogle
+                      (context);
+                  },
+                ),
+              ),
+              const SizedBox(width: 20),
+              SizedBox(
+                width: 120,
+                child: CustomSecondaryButton(
+                  labelText: 'Github',
+                  onPressed: () {
+                    ref.read(authNotifierProvider.notifier).signInWithGithub
+                      (context);
+                  },
+                ),
+              ),
+            ],
+          )
+
         ]),
       ),
     );

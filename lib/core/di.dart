@@ -1,56 +1,62 @@
 import 'package:dio/dio.dart';
+import 'package:dp_project/core/sql_db.dart';
+import 'package:dp_project/feature/photos/data/db/photo_sql.dart';
+import 'package:dp_project/feature/photos/data/repository/photo_repository_impl.dart';
+import 'package:dp_project/feature/photos/domain/repository/photo_repository.dart';
+import 'package:dp_project/feature/photos/domain/usecase/photo_use_case.dart';
+import 'package:dp_project/feature/photos/presentation/controller/my_photo_notifier.dart';
+import 'package:dp_project/feature/photos/presentation/controller/photo_notifier.dart';
+import 'package:dp_project/feature/photos/presentation/controller/state/my_photo_state.dart';
+import 'package:dp_project/feature/photos/presentation/controller/state/photo_state.dart';
+import 'package:dp_project/feature/profile/data/db/user_sql_api.dart';
+import 'package:dp_project/feature/profile/data/repository/user_data_repository_impl.dart';
+import 'package:dp_project/feature/profile/domain/repository/user_data_repository.dart';
+import 'package:dp_project/feature/profile/domain/usecase/user_use_case.dart';
+import 'package:dp_project/feature/profile/presentation/controller/state/user_data_state.dart';
+import 'package:dp_project/feature/profile/presentation/controller/user_data_notifier.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:niamu_project/feature/auth/data/firabase/user_firebase_api.dart';
-import 'package:niamu_project/feature/auth/data/repository/user_repository_impl.dart';
-import 'package:niamu_project/feature/auth/domain/repository/user_repository.dart';
-import 'package:niamu_project/feature/auth/domain/usecase/auth_use_case.dart';
-import 'package:niamu_project/feature/auth/presentation/controller/auth_notifier.dart';
-import 'package:niamu_project/feature/auth/presentation/controller/state/auth_state.dart';
-import 'package:niamu_project/feature/places/data/api/places_api_client.dart';
-import 'package:niamu_project/feature/places/data/db/places_hive_services.dart';
-import 'package:niamu_project/feature/places/data/repository/favorite_places_repository_impl.dart';
-import 'package:niamu_project/feature/places/data/repository/places_repository_impl.dart';
-import 'package:niamu_project/feature/places/domain/repository/favorite_places_repository.dart';
-import 'package:niamu_project/feature/places/domain/repository/places_repository.dart';
-import 'package:niamu_project/feature/places/domain/usecase/favorite_places_use_case.dart';
-import 'package:niamu_project/feature/places/domain/usecase/places_use_case.dart';
-import 'package:niamu_project/feature/places/presentation/controller/favorite_places_notifier.dart';
-import 'package:niamu_project/feature/places/presentation/controller/places_notifier.dart';
-import 'package:niamu_project/feature/places/presentation/controller/state/favorite_place_state.dart';
-import 'package:niamu_project/feature/places/presentation/controller/state/place_state.dart';
+import 'package:dp_project/feature/auth/data/firabase/user_firebase_auth_api.dart';
+import 'package:dp_project/feature/auth/data/repository/user_auth_repository_impl.dart';
+import 'package:dp_project/feature/auth/domain/repository/user_auth_repository.dart';
+import 'package:dp_project/feature/auth/domain/usecase/auth_use_case.dart';
+import 'package:dp_project/feature/auth/presentation/controller/auth_notifier.dart';
+import 'package:dp_project/feature/auth/presentation/controller/state/auth_state.dart';
 
 
 // ***************** EXTERNAL LIBRARIES ***************** //
+final databaseProvider = Provider<SqlDb>((ref) => SqlDb.instance);
 final dioProvider = Provider<Dio>((ref) => Dio());
 final firebaseAuthProvider = Provider<FirebaseAuth>((ref) => FirebaseAuth.instance);
 
 
+
 // ***************** DATASOURCE ***************** //
-final userFirebaseApi = Provider<UserFirebaseApi>((ref) =>
-    UserFirebaseApi(ref.watch(firebaseAuthProvider))
+final userSqlApiProvider = Provider<UserSqlApi>((ref) =>
+    UserSqlApi(ref.watch(databaseProvider))
 );
 
-final placesApiProvider = Provider<PlacesApiClient>((ref) =>
-    PlacesApiClient(ref.watch(dioProvider))
+final userFirebaseApi = Provider<UserFirebaseAuthApi>((ref) =>
+    UserFirebaseAuthApi(ref.watch(firebaseAuthProvider))
 );
 
-// ***************** SERVICE ***************** //
-final favoritePlacesService = Provider<FavoritePlacesService>((ref) =>
-    FavoritePlacesService()
+final photoProvider = Provider<PhotoSql>((ref) =>
+    PhotoSql(ref.watch(databaseProvider))
 );
+
+
 
 // ***************** REPOSITORY ***************** //
-final userFirebaseRepositoryProvider = Provider<UserRepository>(
-      (ref) => UserRepositoryImpl(ref.watch(userFirebaseApi)),
+final userSqlRepositoryProvider = Provider<UserDataRepository>(
+      (ref) => UserDataRepositoryImpl(ref.watch(userSqlApiProvider)),
 );
 
-final placesRepositoryProvider = Provider<PlacesRepository>(
-      (ref) => PlacesRepositoryImpl(ref.watch(placesApiProvider)),
+final userFirebaseRepositoryProvider = Provider<UserAuthRepository>(
+      (ref) => UserAuthRepositoryImpl(ref.watch(userFirebaseApi)),
 );
 
-final favoritePlacesRepositoryProvider = Provider<FavoritePlacesRepository>(
-      (ref) => FavoritePlacesRepositoryImpl(ref.watch(favoritePlacesService)),
+final photoRepositoryProvider = Provider<PhotoRepository>(
+      (ref) => PhotoRepositoryImpl(ref.watch(photoProvider)),
 );
 
 // ***************** USE CASE ***************** //
@@ -58,12 +64,12 @@ final authUseCasesProvider = Provider<AuthUseCase>(
       (ref) => AuthUseCase(ref.watch(userFirebaseRepositoryProvider)),
 );
 
-final placesUseCasesProvider = Provider<PlacesUseCase>(
-      (ref) => PlacesUseCase(ref.watch(placesRepositoryProvider)),
+final photoUseCasesProvider = Provider<PhotoUseCase>(
+      (ref) => PhotoUseCase(ref.watch(photoRepositoryProvider)),
 );
 
-final favoritePlacesUseCasesProvider = Provider<FavoritePlacesUseCase>(
-      (ref) => FavoritePlacesUseCase(ref.watch(favoritePlacesRepositoryProvider)),
+final userUseCasesProvider = Provider<UserUseCase>(
+      (ref) => UserUseCase(ref.watch(userSqlRepositoryProvider)),
 );
 
 // ***************** RIVERPOD ***************** //
@@ -71,13 +77,20 @@ final authNotifierProvider = NotifierProvider<AuthNotifier, AuthState>(
       () => AuthNotifier(),
 );
 
-final placesNotifierProvider = NotifierProvider<PlacesNotifier, PlacesState>(
-      () => PlacesNotifier(),
+final photoNotifierProvider = NotifierProvider<PhotoNotifier, PhotoState>(
+      () => PhotoNotifier(),
 );
 
-final favoritePlacesNotifiesProvider = NotifierProvider<FavoritePlacesNotifier, FavoritePlaceState>(
-      () => FavoritePlacesNotifier(),
+final userDataNotifierProvider = NotifierProvider<UserDataNotifier, UserDataState>(
+      () => UserDataNotifier(),
 );
+
+final myPhotoNotifierProvider = NotifierProvider<MyPhotoNotifier, MyPhotoState>(
+      () => MyPhotoNotifier(),
+);
+
+
+
 
 
 

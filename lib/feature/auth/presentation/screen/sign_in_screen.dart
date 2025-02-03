@@ -1,9 +1,9 @@
+import 'package:dp_project/feature/common/presentation/widget/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:niamu_project/core/di.dart';
-import 'package:niamu_project/core/route_generator.dart';
-import 'package:niamu_project/core/style/style_extensions.dart';
-import 'package:niamu_project/feature/auth/presentation/widget/sign_in_form.dart';
+import 'package:dp_project/core/route_generator.dart';
+import 'package:dp_project/core/style/style_extensions.dart';
+import 'package:dp_project/feature/auth/presentation/widget/sign_in_form.dart';
 
 class SignInScreen extends ConsumerStatefulWidget {
   const SignInScreen({super.key});
@@ -16,6 +16,12 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: const CustomAppBar(
+        title: "Login",
+        elevation: 10,
+        isBackButtonVisible: true,
+        isTitleCentered: true,
+      ),
       body: SafeArea(
           child: Center(
         child: SingleChildScrollView(
@@ -25,6 +31,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 10, horizontal: 40),
                 child: Image(
+                  height: 200,
                   image: AssetImage('assets/images/login_image.png'),
                 ),
               ),

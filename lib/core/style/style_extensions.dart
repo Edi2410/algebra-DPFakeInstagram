@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:niamu_project/core/style/text_style.dart';
+import 'package:dp_project/core/style/text_style.dart';
 
 import 'colors.dart';
 

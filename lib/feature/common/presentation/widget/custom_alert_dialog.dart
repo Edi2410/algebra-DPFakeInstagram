@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:niamu_project/core/style/style_extensions.dart';
+import 'package:dp_project/core/style/style_extensions.dart';
 
 
 enum DialogType { success, error }

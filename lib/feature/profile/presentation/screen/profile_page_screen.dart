@@ -1,11 +1,12 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:dp_project/core/route_generator.dart';
+import 'package:dp_project/feature/auth/presentation/controller/state/auth_state.dart';
+import 'package:dp_project/feature/common/presentation/screen/loading_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:niamu_project/core/style/style_extensions.dart';
-import 'package:niamu_project/feature/common/presentation/widget/custom_app_bar.dart';
-import 'package:niamu_project/feature/common/presentation/widget/custom_primary_button.dart';
-import 'package:niamu_project/feature/common/presentation/widget/custom_secondary_button.dart';
+import 'package:dp_project/core/style/style_extensions.dart';
+import 'package:dp_project/feature/common/presentation/widget/custom_app_bar.dart';
+import 'package:dp_project/feature/common/presentation/widget/custom_primary_button.dart';
+import 'package:dp_project/feature/common/presentation/widget/custom_secondary_button.dart';
 
 import '../../../../core/di.dart';
 
@@ -19,8 +20,16 @@ class ProfilePageScreen extends ConsumerStatefulWidget {
 class _ProfileScreenState extends ConsumerState<ProfilePageScreen> {
   @override
   Widget build(BuildContext context) {
-    User? user = FirebaseAuth.instance.currentUser;
+    final authState = ref.watch(authNotifierProvider);
 
+    return switch (authState) {
+      LoadingAuth() => const LoadingScreen(),
+      UnauthenticatedAuthState() => _buildLoginScreen(context),
+      AuthenticatedAuth() => _buildProfilePage(context, authState),
+    };
+  }
+
+  _buildProfilePage(BuildContext context, authState) {
     return SafeArea(
       child: Scaffold(
         appBar: const CustomAppBar(title: "Profile"),
@@ -38,23 +47,18 @@ class _ProfileScreenState extends ConsumerState<ProfilePageScreen> {
                     CircleAvatar(
                       radius: 75,
                       backgroundImage: NetworkImage(
-                        user?.photoURL != null && user!.photoURL!.isNotEmpty
-                            ? user.photoURL!
+                        authState.authUser.photoURL != null &&
+                                authState.authUser.photoURL!.isNotEmpty
+                            ? authState.authUser.photoURL!
                             : 'https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png',
                       ),
                     ),
                     const SizedBox(height: 10),
-                    Text(
-                        (user?.displayName != null &&
-                                user!.displayName!.isNotEmpty)
-                            ? user.displayName!
-                            : '-',
+                    Text(authState.authUser.displayName ?? '-',
                         style: context.textTitle),
                     const SizedBox(height: 10),
                     Text(
-                      (user?.email != null && user!.email!.isNotEmpty)
-                          ? user.email!
-                          : '-',
+                      authState.authUser.email!,
                       style: context.textStandard,
                     ),
                   ],
@@ -63,11 +67,10 @@ class _ProfileScreenState extends ConsumerState<ProfilePageScreen> {
                   children: [
                     const SizedBox(height: 20),
                     CustomSecondaryButton(
-                        labelText: "Deactivate account",
+                        labelText: "Change package",
                         onPressed: () {
-                          ref
-                              .read(authNotifierProvider.notifier)
-                              .deleteUser(context);
+                          Navigator.of(context)
+                              .pushNamed(RouteGenerator.changePackageScreen);
                         }),
                     const SizedBox(height: 20),
                     CustomPrimaryButton(
@@ -77,6 +80,55 @@ class _ProfileScreenState extends ConsumerState<ProfilePageScreen> {
                               .read(authNotifierProvider.notifier)
                               .signOut(context);
                         })
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  _buildLoginScreen(BuildContext context) {
+    return SafeArea(
+      child: Scaffold(
+        appBar: const CustomAppBar(title: "Profile"),
+        body: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: SizedBox(
+            width: double.maxFinite,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Column(
+                  children: [
+                    const SizedBox(height: 50),
+                    const CircleAvatar(
+                      radius: 75,
+                      backgroundImage: NetworkImage(
+                        'https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png',
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text('-', style: context.textTitle),
+                    const SizedBox(height: 10),
+                    Text(
+                      '-',
+                      style: context.textStandard,
+                    ),
+                  ],
+                ),
+                Column(
+                  children: [
+                    const SizedBox(height: 20),
+                    CustomPrimaryButton(
+                        labelText: "Login",
+                        onPressed: () {
+                          Navigator.of(context)
+                              .pushNamed(RouteGenerator.signInScreen);
+                        }),
                   ],
                 ),
               ],

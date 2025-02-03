@@ -1,9 +1,9 @@
+import 'package:dp_project/feature/photos/presentation/screen/my_photo_page_screen.dart';
+import 'package:dp_project/feature/photos/presentation/screen/photo_page_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:niamu_project/core/style/style_extensions.dart';
-import 'package:niamu_project/feature/places/presentation/screen/favorite_page_screen.dart';
-import 'package:niamu_project/feature/places/presentation/screen/places_page_screen.dart';
-import 'package:niamu_project/feature/profile/presentation/screen/profile_page_screen.dart';
+import 'package:dp_project/core/style/style_extensions.dart';
+import 'package:dp_project/feature/profile/presentation/screen/profile_page_screen.dart';
 
 class HomePageScreen extends ConsumerStatefulWidget {
   const HomePageScreen({super.key});
@@ -103,8 +103,8 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
         body: IndexedStack(
           index: currentPageIndex,
           children: const [
-            PlacesPageScreen(),
-            FavoritePageScreen(),
+            PhotoPageScreen(),
+            MyPhotoPageScreen(),
             ProfilePageScreen(),
           ],
         ),

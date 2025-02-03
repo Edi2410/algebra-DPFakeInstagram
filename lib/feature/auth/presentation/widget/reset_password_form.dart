@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:niamu_project/core/di.dart';
-import 'package:niamu_project/feature/common/presentation/widget/custom_primary_button.dart';
-import 'package:niamu_project/feature/common/presentation/widget/custom_text_field.dart';
+import 'package:dp_project/core/di.dart';
+import 'package:dp_project/feature/common/presentation/widget/custom_primary_button.dart';
+import 'package:dp_project/feature/common/presentation/widget/custom_text_field.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
 class ResetPasswordForm extends HookConsumerWidget {

@@ -1,9 +1,10 @@
+import 'package:dp_project/core/route_generator.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:niamu_project/core/di.dart';
-import 'package:niamu_project/core/style/style_extensions.dart';
-import 'package:niamu_project/feature/common/presentation/widget/custom_app_bar.dart';
-import '../../../../core/route_generator.dart';
+import 'package:dp_project/core/di.dart';
+import 'package:dp_project/core/style/style_extensions.dart';
+import 'package:dp_project/feature/common/presentation/widget/custom_app_bar.dart';
+
 
 class VerifyEmailScreen extends HookConsumerWidget {
   const VerifyEmailScreen({super.key});

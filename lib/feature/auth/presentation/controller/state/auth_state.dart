@@ -1,6 +1,6 @@
-
+import 'package:dp_project/feature/profile/domain/entity/custom_user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:niamu_project/core/error/failure.dart';
+import 'package:dp_project/core/error/failure.dart';
 
 sealed class AuthState {
   const AuthState();
@@ -18,7 +18,7 @@ class UnauthenticatedAuthState extends AuthState {
 }
 
 class AuthenticatedAuth extends AuthState {
-  final User user;
+  final User authUser;
 
-  const AuthenticatedAuth(this.user);
+  const AuthenticatedAuth(this.authUser);
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:niamu_project/core/style/style_extensions.dart';
+import 'package:dp_project/core/style/style_extensions.dart';
 
 class CustomSecondaryButton extends StatelessWidget {
   final GlobalKey<FormState>? formKey;
@@ -64,10 +64,16 @@ class CustomSecondaryButton extends StatelessWidget {
               ).createShader(
                 Rect.fromLTWH(0, 0, bounds.width, bounds.height),
               ),
-              child: Text(
-                labelText.toUpperCase(),
-                textAlign: TextAlign.center,
-                style: context.textButton
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                // Ensure the text scales down if too long
+                child: Text(
+                  labelText.toUpperCase(),
+                  textAlign: TextAlign.center,
+                  softWrap: false,
+                  overflow: TextOverflow.ellipsis,
+                  style: context.textButton,
+                ),
               ),
             ),
           ),

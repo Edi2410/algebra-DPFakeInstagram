@@ -1,4 +1,4 @@
-package com.example.niamu_project
+package com.example.dp_project
 
 import io.flutter.embedding.android.FlutterActivity
 

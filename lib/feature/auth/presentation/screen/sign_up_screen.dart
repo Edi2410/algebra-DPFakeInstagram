@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:niamu_project/core/route_generator.dart';
-import 'package:niamu_project/core/style/style_extensions.dart';
-import 'package:niamu_project/feature/auth/presentation/widget/sign_up_form.dart';
-import 'package:niamu_project/feature/common/presentation/widget/custom_app_bar.dart';
+import 'package:dp_project/core/route_generator.dart';
+import 'package:dp_project/core/style/style_extensions.dart';
+import 'package:dp_project/feature/auth/presentation/widget/sign_up_form.dart';
+import 'package:dp_project/feature/common/presentation/widget/custom_app_bar.dart';
 
 class SignUpScreen extends ConsumerStatefulWidget {
   const SignUpScreen({super.key});
@@ -31,6 +31,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 10, horizontal: 60),
                 child: Image(
+                  height: 150,
                   image: AssetImage('assets/images/login_image.png'),
                 ),
               ),

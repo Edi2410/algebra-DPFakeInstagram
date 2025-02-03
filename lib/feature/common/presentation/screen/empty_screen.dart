@@ -1,13 +1,31 @@
+import 'package:dp_project/core/route_generator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:niamu_project/core/style/style_extensions.dart';
+import 'package:dp_project/core/style/style_extensions.dart';
 
 class EmptyScreen extends StatelessWidget {
   const EmptyScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final authUser = FirebaseAuth.instance.currentUser;
+
     return SafeArea(
       child: Scaffold(
+        floatingActionButton: authUser != null
+            ? FloatingActionButton(
+                backgroundColor: context.primaryColor,
+                onPressed: () {
+                  Navigator.of(context)
+                      .pushNamed(RouteGenerator.addNewPhotoScreen);
+                },
+                child: const Icon(
+                  Icons.add,
+                  color: Colors.white,
+                  size: 32,
+                ),
+              )
+            : null,
         body: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -20,7 +38,7 @@ class EmptyScreen extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(
                       vertical: 4.0, horizontal: 32.0),
                   child: Text(
-                    "There are no favorites yet...",
+                    "No data found",
                     style: context.textTitle.copyWith(
                       fontSize: 24,
                     ),
@@ -31,7 +49,7 @@ class EmptyScreen extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(
                       vertical: 4.0, horizontal: 32.0),
                   child: Text(
-                    "Here you will see all your favorite sights. Mark them as favorite by pressing the heart icon.",
+                    "There is no data available for this section",
                     style: context.textStandard.copyWith(
                       color: context.textColor.withOpacity(0.8),
                     ),

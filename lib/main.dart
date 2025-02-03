@@ -1,18 +1,17 @@
-
+import 'package:cloudinary_flutter/cloudinary_context.dart';
+import 'package:cloudinary_flutter/cloudinary_object.dart';
+import 'package:cloudinary_url_gen/cloudinary.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:niamu_project/core/route_generator.dart';
-import 'package:niamu_project/core/style/theme.dart';
+import 'package:dp_project/core/route_generator.dart';
+import 'package:dp_project/core/style/theme.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:niamu_project/feature/places/domain/models/favorite_place_model.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Hive.initFlutter();
-  Hive.registerAdapter(FavoritePlaceModelAdapter());
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  CloudinaryContext.cloudinary = Cloudinary.fromCloudName(cloudName: 'dcrfeyi2f');
   runApp(const ProviderScope(child: MyApp()));
 }
 

@@ -33,6 +33,8 @@ const _stateTitleTextStyle = TextStyle(
   fontWeight: FontWeight.bold,
 );
 
+
+
 extension CustomTextStyle on TextTheme {
   TextStyle get appBar => _appBarTextStyle;
   TextStyle get title => _titleTextStyle;

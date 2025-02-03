@@ -1,10 +1,10 @@
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:niamu_project/core/error/failure.dart';
-import 'package:niamu_project/feature/auth/domain/repository/user_repository.dart';
+import 'package:dp_project/core/error/failure.dart';
+import 'package:dp_project/feature/auth/domain/repository/user_auth_repository.dart';
 
 class AuthUseCase {
-  final UserRepository _userRepository;
+  final UserAuthRepository _userRepository;
 
   const AuthUseCase(this._userRepository);
 
@@ -31,4 +31,13 @@ class AuthUseCase {
   Future<Either<Failure, void>> resendVerificationEmail() async {
     return await _userRepository.resendVerificationEmail();
   }
+
+  Future<Either<Failure, UserCredential>> signInWithGoogle() async {
+    return await _userRepository.signInWithGoogle();
+  }
+
+  Future<Either<Failure, UserCredential>> signInWithGithub() async {
+    return await _userRepository.signInWithGithub();
+  }
+
 }

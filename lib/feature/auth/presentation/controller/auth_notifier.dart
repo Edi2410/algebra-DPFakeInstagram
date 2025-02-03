@@ -1,23 +1,28 @@
+import 'package:dp_project/feature/profile/domain/entity/free_package.dart';
+import 'package:dp_project/feature/profile/domain/entity/package_info.dart';
+import 'package:dp_project/feature/profile/domain/usecase/user_use_case.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:niamu_project/core/di.dart';
-import 'package:niamu_project/core/route_generator.dart';
-import 'package:niamu_project/feature/auth/domain/usecase/auth_use_case.dart';
-import 'package:niamu_project/feature/auth/presentation/controller/state/auth_state.dart';
-import 'package:niamu_project/feature/common/presentation/utility/show_custom_alert_dialog.dart';
+import 'package:dp_project/core/di.dart';
+import 'package:dp_project/core/route_generator.dart';
+import 'package:dp_project/feature/auth/domain/usecase/auth_use_case.dart';
+import 'package:dp_project/feature/auth/presentation/controller/state/auth_state.dart';
+import 'package:dp_project/feature/common/presentation/utility/show_custom_alert_dialog.dart';
 
 class AuthNotifier extends Notifier<AuthState> {
   late final AuthUseCase _authUseCases;
-  late User? currentUser;
+  late final UserUseCase _userUseCases;
+
 
   @override
   AuthState build() {
     _authUseCases = ref.watch(authUseCasesProvider);
-    final currentUser = FirebaseAuth.instance.currentUser;
-    return currentUser == null
-        ? const UnauthenticatedAuthState(fromSignIn: false)
-        : AuthenticatedAuth(currentUser);
+    _userUseCases = ref.watch(userUseCasesProvider);
+    final authUser = FirebaseAuth.instance.currentUser;
+    return authUser != null
+        ? AuthenticatedAuth(authUser)
+        : const UnauthenticatedAuthState(fromSignIn: false);
   }
 
   Future<void> signIn(
@@ -27,35 +32,33 @@ class AuthNotifier extends Notifier<AuthState> {
     result.fold(
       (error) {
         state = UnauthenticatedAuthState(error: error, fromSignIn: true);
-        currentUser = null;
         if (context.mounted) {
-          showCustomAlertDialog(context, error.toString());
+          showCustomAlertDialog(context, error.message);
         }
       },
       (user) {
         state = AuthenticatedAuth(user!);
-        currentUser = user;
         Navigator.of(context).pushNamed(RouteGenerator.homePageScreen);
       },
     );
   }
 
-  Future<void> signUp(
-      BuildContext context, String email, String password) async {
+  Future<void> signUp(BuildContext context, String email, String password,
+      PackageInfo chosenPackage) async {
     state = const LoadingAuth();
     final result = await _authUseCases.signUp(email, password);
     result.fold(
       (error) {
         if (context.mounted) {
-          showCustomAlertDialog(context, error.toString());
+          showCustomAlertDialog(context, error.message);
         }
         state = UnauthenticatedAuthState(error: error, fromSignIn: false);
-        currentUser = null;
       },
       (user) {
-        state = AuthenticatedAuth(user!);
-        currentUser = user;
-        currentUser!.sendEmailVerification();
+
+        AuthenticatedAuth(user!);
+        _userUseCases.createUserDataIfNotExist(user, chosenPackage);
+        user.sendEmailVerification();
         Navigator.of(context).pushNamed(RouteGenerator.verifyEmailScreen,
             arguments: ModalRoute.of(context)?.settings.name);
       },
@@ -67,7 +70,7 @@ class AuthNotifier extends Notifier<AuthState> {
     results.fold(
       (error) {
         if (context.mounted) {
-          showCustomAlertDialog(context, error.toString());
+          showCustomAlertDialog(context, error.message);
         }
       },
       (_) {
@@ -81,11 +84,10 @@ class AuthNotifier extends Notifier<AuthState> {
     final results = await _authUseCases.signOutUser();
     results.fold((error) {
       if (context.mounted) {
-        showCustomAlertDialog(context, error.toString());
+        showCustomAlertDialog(context, error.message);
       }
     }, (_) {
       state = const UnauthenticatedAuthState(fromSignIn: false);
-      currentUser = null;
       Navigator.of(context).pushNamed(RouteGenerator.signInScreen);
     });
   }
@@ -98,11 +100,49 @@ class AuthNotifier extends Notifier<AuthState> {
 
     results.fold((error) {
       if (context.mounted) {
-        showCustomAlertDialog(context, error.toString());
+        showCustomAlertDialog(context, error.message);
       }
     }, (_) {
       state = const UnauthenticatedAuthState(fromSignIn: false);
       Navigator.of(context).pushNamed(RouteGenerator.signInScreen);
     });
   }
+
+  Future<void> signInWithGoogle(BuildContext context) async {
+    state = const LoadingAuth();
+    final result = await _authUseCases.signInWithGoogle();
+    result.fold(
+      (error) {
+        state = UnauthenticatedAuthState(error: error, fromSignIn: true);
+        if (context.mounted) {
+          showCustomAlertDialog(context, error.message);
+        }
+      },
+      (user) {
+        _userUseCases.createUserDataIfNotExist(user.user!, FreePackage());
+        state = AuthenticatedAuth(user.user!);
+        Navigator.of(context).pushNamed(RouteGenerator.homePageScreen);
+      },
+    );
+  }
+
+  Future<void> signInWithGithub(BuildContext context) async {
+    state = const LoadingAuth();
+    final result = await _authUseCases.signInWithGithub();
+    result.fold(
+      (error) {
+        state = UnauthenticatedAuthState(error: error, fromSignIn: true);
+        if (context.mounted) {
+          showCustomAlertDialog(context, error.message);
+        }
+      },
+      (user) {
+        _userUseCases.createUserDataIfNotExist(user.user!, FreePackage());
+        state = AuthenticatedAuth(user.user!);
+        Navigator.of(context).pushNamed(RouteGenerator.homePageScreen);
+      },
+    );
+  }
+
+
 }
