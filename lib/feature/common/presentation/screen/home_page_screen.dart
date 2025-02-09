@@ -1,5 +1,7 @@
+import 'package:dp_project/feature/common/presentation/screen/noAuth_screen.dart';
 import 'package:dp_project/feature/photos/presentation/screen/my_photo_page_screen.dart';
 import 'package:dp_project/feature/photos/presentation/screen/photo_page_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dp_project/core/style/style_extensions.dart';
@@ -13,6 +15,7 @@ class HomePageScreen extends ConsumerStatefulWidget {
 }
 
 class _HomePageScreenState extends ConsumerState<HomePageScreen> {
+  final authUser = FirebaseAuth.instance.currentUser;
   int currentPageIndex = 0;
 
   @override
@@ -45,10 +48,10 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
             ),
             BottomNavigationBarItem(
               icon: Icon(
-                Icons.favorite,
+                Icons.photo_library,
                 color: context.textColor.withOpacity(0.6),
               ),
-              label: 'Favorites',
+              label: 'My Photos',
               activeIcon: ShaderMask(
                 blendMode: BlendMode.srcIn,
                 shaderCallback: (Rect bounds) => LinearGradient(
@@ -98,14 +101,13 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
           selectedItemColor: context.textColor,
           unselectedLabelStyle: context.textButton,
           unselectedItemColor: context.textColor,
-
         ),
         body: IndexedStack(
           index: currentPageIndex,
-          children: const [
-            PhotoPageScreen(),
-            MyPhotoPageScreen(),
-            ProfilePageScreen(),
+          children: [
+            const PhotoPageScreen(),
+            authUser != null ? const MyPhotoPageScreen() : const NoauthScreen(),
+            const ProfilePageScreen(),
           ],
         ),
       ),

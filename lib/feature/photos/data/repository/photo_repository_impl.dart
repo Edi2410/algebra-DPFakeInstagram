@@ -65,4 +65,14 @@ class PhotoRepositoryImpl implements PhotoRepository {
       return Left(GeneralError(message: e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, List<Photo>?>> searchPhoto(String query) async {
+    try {
+      final photos = await _api.searchPhoto(query);
+      return Right(photos);
+    } catch (e) {
+      return Left(GeneralError(message: e.toString()));
+    }
+  }
 }

@@ -1,4 +1,6 @@
+import 'package:dp_project/feature/logging/presentation/screen/logs_screen.dart';
 import 'package:dp_project/feature/photos/presentation/screen/add_new_photo_screen.dart';
+import 'package:dp_project/feature/photos/presentation/screen/search_photo_screen.dart';
 import 'package:dp_project/feature/profile/presentation/screen/change_package_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:dp_project/feature/auth/presentation/screen/confirm_email_screen.dart';
@@ -17,6 +19,8 @@ class RouteGenerator {
   static const homePageScreen = '/homePage';
   static const changePackageScreen = '/changePackage';
   static const addNewPhotoScreen = '/addNewImage';
+  static const logsScreen = '/logs';
+  static const searchPhotoScreen = '/searchPhoto';
 
   RouteGenerator._();
 
@@ -51,6 +55,16 @@ class RouteGenerator {
         return MaterialPageRoute(
           settings: settings,
           builder: (_) => const AddNewPhotoScreen(),
+        );
+      case logsScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const LogsScreen(),
+        );
+      case searchPhotoScreen:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const SearchPhotoScreen(),
         );
 
       default:

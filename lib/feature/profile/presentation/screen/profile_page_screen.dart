@@ -1,6 +1,7 @@
 import 'package:dp_project/core/route_generator.dart';
 import 'package:dp_project/feature/auth/presentation/controller/state/auth_state.dart';
 import 'package:dp_project/feature/common/presentation/screen/loading_screen.dart';
+import 'package:dp_project/feature/profile/presentation/widget/show_logs_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dp_project/core/style/style_extensions.dart';
@@ -32,7 +33,15 @@ class _ProfileScreenState extends ConsumerState<ProfilePageScreen> {
   _buildProfilePage(BuildContext context, authState) {
     return SafeArea(
       child: Scaffold(
-        appBar: const CustomAppBar(title: "Profile"),
+        appBar: CustomAppBar(
+          title: "Profile",
+          rightAction: IconButton(
+            onPressed: () {
+              ref.read(authNotifierProvider.notifier).signOut(context);
+            },
+            icon: const Icon(Icons.logout, color: Colors.black),
+          ),
+        ),
         body: Padding(
           padding: const EdgeInsets.all(20.0),
           child: SizedBox(
@@ -65,21 +74,15 @@ class _ProfileScreenState extends ConsumerState<ProfilePageScreen> {
                 ),
                 Column(
                   children: [
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 10),
                     CustomSecondaryButton(
                         labelText: "Change package",
                         onPressed: () {
                           Navigator.of(context)
                               .pushNamed(RouteGenerator.changePackageScreen);
                         }),
-                    const SizedBox(height: 20),
-                    CustomPrimaryButton(
-                        labelText: "Sign out",
-                        onPressed: () {
-                          ref
-                              .read(authNotifierProvider.notifier)
-                              .signOut(context);
-                        })
+                    const SizedBox(height: 10),
+                    const ShowLogsButton(),
                   ],
                 ),
               ],

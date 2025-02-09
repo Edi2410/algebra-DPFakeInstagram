@@ -1,4 +1,4 @@
-import 'dart:io';
+
 import 'package:dp_project/feature/common/presentation/utility/show_custom_alert_dialog.dart';
 import 'package:dp_project/feature/photos/domain/entity/photo.dart';
 import 'package:dp_project/feature/photos/domain/usecase/photo_use_case.dart';
@@ -17,9 +17,8 @@ class MyPhotoNotifier extends Notifier<MyPhotoState> {
   MyPhotoState build() {
     _photoUseCase = ref.read(photoUseCasesProvider);
     getMyPhotos();
-    return const LoadingMyPhotos();
+    return state;
   }
-
 
   Future<void> getMyPhotos() async {
     state = const LoadingMyPhotos();
@@ -32,11 +31,20 @@ class MyPhotoNotifier extends Notifier<MyPhotoState> {
     final result = await _photoUseCase.getMyPhoto(authUser.uid);
 
     result.fold(
-          (failure) => state = ErrorMyPhotos(error: failure),
-          (photos) {
+      (failure) {
+        ref
+            .read(errorLogsNotifierProvider.notifier)
+            .addErrorLog('getMyPhotos', failure.toString());
+        return state = ErrorMyPhotos(error: failure);
+      },
+      (photos) {
         if (photos == null || photos.isEmpty) {
+          ref.read(infoLogsNotifierProvider.notifier).addInfoLog('getMyPhotos'
+              ' empty');
           state = const EmptyMyPhoto();
         } else {
+          ref.read(infoLogsNotifierProvider.notifier).addInfoLog('getMyPhotos'
+              ' success');
           myPhotos = photos;
           state = SuccessMyPhotos(photos);
         }
@@ -44,13 +52,17 @@ class MyPhotoNotifier extends Notifier<MyPhotoState> {
     );
   }
 
-
   Future<void> deletePhoto(String photoId, String uid) async {
     state = const LoadingMyPhotos();
     final result = await _photoUseCase.deletePhoto(photoId, uid);
     result.fold(
-          (failure) => state = ErrorMyPhotos(error: failure),
-          (_) {
+      (failure) {
+        ref.read(errorLogsNotifierProvider.notifier).addErrorLog('deletePhoto',
+            failure.toString());
+        return state = ErrorMyPhotos(error: failure);
+      },
+      (_) {
+        ref.read(infoLogsNotifierProvider.notifier).addInfoLog('deletePhoto');
         getMyPhotos();
       },
     );
@@ -60,16 +72,17 @@ class MyPhotoNotifier extends Notifier<MyPhotoState> {
     state = const LoadingMyPhotos();
     final result = await _photoUseCase.editPhoto(photo);
     result.fold(
-          (failure) {
-        print(failure);
+      (failure) {
+        ref.read(errorLogsNotifierProvider.notifier).addErrorLog('editPhoto',
+            failure.toString());
         return state = ErrorMyPhotos(error: failure);
       },
-          (_) {
+      (_) {
+        ref.read(infoLogsNotifierProvider.notifier).addInfoLog('editPhoto '
+            'success');
         getMyPhotos();
         if (context.mounted) {
-          showCustomAlertDialog(
-              context,
-              'Photo edited.');
+          showCustomAlertDialog(context, 'Photo edited.');
         }
         Navigator.of(context).overlay;
       },

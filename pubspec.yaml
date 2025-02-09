@@ -38,6 +38,9 @@ dependencies:
   cloudinary_flutter: ^1.0.0
   cloudinary_url_gen: ^1.0.0
   image_picker: ^1.1.2
+  flutter_downloader: ^1.11.0
+  http: ^1.0.0
+  path_provider: ^2.0.7
   image_downloader:
     git:
       url: https://github.com/tHEO2k17/image_downloader.git

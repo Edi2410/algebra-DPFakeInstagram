@@ -11,6 +11,7 @@ class CustomTextField extends HookConsumerWidget {
   final Map<String, String Function(Object)>? validationMessages;
   final bool isPasswordField;
   final Function(FormControl<dynamic>)? onChanged;
+  final TextEditingController? controller;
 
   const CustomTextField({
     super.key,
@@ -19,6 +20,7 @@ class CustomTextField extends HookConsumerWidget {
     this.onChanged,
     this.validationMessages,
     this.isPasswordField = false,
+    this.controller,
   });
 
   @override
@@ -26,6 +28,7 @@ class CustomTextField extends HookConsumerWidget {
     return Column(
       children: [
         ReactiveTextField(
+          controller: controller,
           formControlName: formControlName,
           autocorrect: !isPasswordField,
           obscureText: isPasswordField,

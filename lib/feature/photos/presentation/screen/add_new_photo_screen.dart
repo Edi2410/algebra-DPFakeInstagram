@@ -8,7 +8,6 @@ import 'package:dp_project/feature/common/presentation/widget/custom_radio_butto
 import 'package:dp_project/feature/common/presentation/widget/custom_secondary_button.dart';
 import 'package:dp_project/feature/common/presentation/widget/custom_text_field.dart';
 import 'package:dp_project/feature/photos/domain/entity/photo.dart';
-import 'package:dp_project/feature/photos/presentation/controller/photo_notifier.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -164,6 +163,7 @@ class AddNewPhotoScreen extends HookConsumerWidget {
                   },
                 ),
               ),
+              const SizedBox(height: 8),
             ],
           ),
         ),

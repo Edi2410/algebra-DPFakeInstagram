@@ -35,4 +35,8 @@ class PhotoUseCase {
   Future<Either<Failure, List<Photo>?>> getMyPhoto(String uid) async {
     return await _photoRepository.getMyPhoto(uid);
   }
+
+  Future<Either<Failure, List<Photo>?>> searchPhoto(String query) async {
+    return await _photoRepository.searchPhoto(query);
+  }
 }

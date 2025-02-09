@@ -1,20 +1,21 @@
-
-
 import 'package:dp_project/core/di.dart';
 import 'package:dp_project/core/style/style_extensions.dart';
 import 'package:dp_project/feature/photos/domain/entity/photo.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class PhotoDetailsWidget extends ConsumerWidget {
   final Photo photo;
 
-
-  const PhotoDetailsWidget(
-      {super.key, required this.photo});
+  const PhotoDetailsWidget({super.key, required this.photo});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final authUser = FirebaseAuth.instance.currentUser;
+
+    bool showDownloadButton = authUser != null;
+
     return Scaffold(
       body: Center(
         child: Column(
@@ -61,17 +62,19 @@ class PhotoDetailsWidget extends ConsumerWidget {
                               end: Alignment.bottomRight,
                             ),
                           ),
-                          child: IconButton(
-                            icon: Icon(
-                              Icons.download,
-                              color: context.backgroundColor,
-                            ),
-                            onPressed: () {
-                              ref
-                                  .read(photoNotifierProvider.notifier)
-                                  .downloadPhoto(context, photo.url!);
-                            },
-                          ),
+                          child: showDownloadButton
+                              ? IconButton(
+                                  icon: Icon(
+                                    Icons.download,
+                                    color: context.backgroundColor,
+                                  ),
+                                  onPressed: () {
+                                    ref
+                                        .read(photoNotifierProvider.notifier)
+                                        .downloadPhoto(context, photo.url!);
+                                  },
+                                )
+                              : const SizedBox(),
                         ),
                       ),
                       Text(
@@ -80,7 +83,8 @@ class PhotoDetailsWidget extends ConsumerWidget {
                           fontSize: 24,
                         ),
                       ),
-                      Text(photo.uploadDate.toString(), style: context.textStandard),
+                      Text(photo.uploadDate.toString(),
+                          style: context.textStandard),
                       const SizedBox(height: 8),
                       Text(
                         photo.hashtags,

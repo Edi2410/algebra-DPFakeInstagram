@@ -1,4 +1,3 @@
-import 'package:cloudinary_flutter/image/cld_image.dart';
 import 'package:dp_project/core/di.dart';
 import 'package:dp_project/core/route_generator.dart';
 import 'package:dp_project/core/style/style_extensions.dart';
@@ -30,7 +29,18 @@ class PhotoPageScreen extends ConsumerWidget {
     final authUser = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
-      appBar: const CustomAppBar(title: "Photos"),
+      appBar: CustomAppBar(
+        title: "Photos",
+        rightAction: IconButton(
+          icon: const Icon(
+            Icons.search,
+            color: Colors.black,
+          ),
+          onPressed: () {
+            Navigator.of(context).pushNamed(RouteGenerator.searchPhotoScreen);
+          },
+        ),
+      ),
       floatingActionButton: authUser != null
           ? FloatingActionButton(
               backgroundColor: context.primaryColor,
@@ -51,11 +61,9 @@ class PhotoPageScreen extends ConsumerWidget {
         itemBuilder: (BuildContext context, int index) {
           return Column(
             children: [
-             PhotoCard(photo: photos[index]),
+              PhotoCard(photo: photos[index]),
               const SizedBox(height: 8),
             ],
-
-
           );
         },
       ),

@@ -3,6 +3,7 @@ import 'package:dp_project/core/style/style_extensions.dart';
 import 'package:dp_project/feature/photos/domain/entity/photo.dart';
 import 'package:dp_project/feature/photos/presentation/widget/edit_photo_widget.dart';
 import 'package:dp_project/feature/photos/presentation/widget/photo_details_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -16,6 +17,17 @@ class PhotoCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final authUser = FirebaseAuth.instance.currentUser;
+    final userData = ref.read(userDataNotifierProvider.notifier).user;
+
+    bool showDownloadButton = authUser != null;
+    bool showEditButton = authUser != null && userData != null;
+
+    if (showEditButton &&
+        (authUser.uid == photo.uid || userData.isAdministrator)) {
+      showEditButton = true;
+    }
+
     return GestureDetector(
       onTap: () {
         showModalBottomSheet(
@@ -92,31 +104,35 @@ class PhotoCard extends ConsumerWidget {
                 flex: 1,
                 child: Column(
                   children: [
-                    IconButton(
-                      icon: Icon(
-                        Icons.download,
-                        color: context.backgroundColor,
-                      ),
-                      onPressed: () {
-                        ref
-                            .read(photoNotifierProvider.notifier)
-                            .downloadPhoto(context, photo.url!);
-                      },
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.edit,
-                        color: context.backgroundColor,
-                      ),
-                      onPressed: () {
-                        showModalBottomSheet(
-                            isScrollControlled: true,
-                            context: context,
-                            builder: (_) {
-                              return EditPhotoDetailsWidget(photo: photo);
-                            });
-                      },
-                    ),
+                    showDownloadButton
+                        ? IconButton(
+                            icon: Icon(
+                              Icons.download,
+                              color: context.backgroundColor,
+                            ),
+                            onPressed: () {
+                              ref
+                                  .read(photoNotifierProvider.notifier)
+                                  .downloadPhoto(context, photo.url!);
+                            },
+                          )
+                        : const SizedBox(),
+                    showEditButton
+                        ? IconButton(
+                            icon: Icon(
+                              Icons.edit,
+                              color: context.backgroundColor,
+                            ),
+                            onPressed: () {
+                              showModalBottomSheet(
+                                  isScrollControlled: true,
+                                  context: context,
+                                  builder: (_) {
+                                    return EditPhotoDetailsWidget(photo: photo);
+                                  });
+                            },
+                          )
+                        : const SizedBox(),
                   ],
                 ),
               ),

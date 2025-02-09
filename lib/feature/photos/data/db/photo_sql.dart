@@ -165,7 +165,35 @@ class PhotoSql {
     }
   }
 
+  Future<List<Photo>> searchPhoto(String query) async {
+    final database = await _sqlDb.db;
+    List<Photo> photos = [];
 
+    var sqlPhotos = await database.query(
+      'Photo',
+      where: 'description LIKE ? OR hashtags LIKE ? OR author LIKE ?',
+      whereArgs: ['%$query%', '%$query%', '%$query%'],
+      orderBy: 'date DESC',
+      limit: 10,
+    );
+
+    if (sqlPhotos.isNotEmpty) {
+      sqlPhotos
+          .map((photo) => photos.add(Photo(
+        id: photo['id'].toString(),
+        uid: photo['uid'].toString(),
+        size: photo['size'].toString(),
+        url: photo['url'].toString(),
+        uploadDate: DateTime.parse(photo['date'].toString().replaceFirst(' ', 'T')),
+        description: photo['description'].toString(),
+        author: photo['author'].toString(),
+        hashtags: photo['hashtags'].toString(),
+      )))
+          .toList();
+    }
+
+    return photos;
+  }
 
 
 }

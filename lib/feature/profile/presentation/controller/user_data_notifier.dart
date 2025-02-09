@@ -1,5 +1,4 @@
 import 'package:dp_project/core/di.dart';
-import 'package:dp_project/core/route_generator.dart';
 import 'package:dp_project/feature/common/presentation/utility/show_custom_alert_dialog.dart';
 import 'package:dp_project/feature/profile/domain/entity/custom_user.dart';
 import 'package:dp_project/feature/profile/domain/entity/package_info.dart';
@@ -10,7 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class UserDataNotifier extends Notifier<UserDataState> {
-  final authUser = FirebaseAuth.instance.currentUser;
+
   late final UserUseCase _userUseCases;
   CustomUser? user;
 
@@ -18,17 +17,22 @@ class UserDataNotifier extends Notifier<UserDataState> {
   UserDataState build() {
     _userUseCases = ref.watch(userUseCasesProvider);
     getUserData();
-    return user != null ? SuccessUserData(user!) : const LoadingUserData();
+    return state;
   }
 
   Future<void> getUserData() async {
+    final authUser = FirebaseAuth.instance.currentUser;
     state = const LoadingUserData();
     final result = await _userUseCases.getUserData(authUser!);
     result.fold(
       (error) {
+        ref.read(errorLogsNotifierProvider.notifier).addErrorLog('getUserData',
+            error.toString());
         state = ErrorUserDataState(error: error);
       },
       (user) {
+        ref.read(infoLogsNotifierProvider.notifier).addInfoLog('getUserData '
+            'success');
         state = SuccessUserData(user);
         this.user = user;
       },
@@ -40,9 +44,13 @@ class UserDataNotifier extends Notifier<UserDataState> {
     final result = await _userUseCases.updatePackageInfo(customUser, packageInfo);
     result.fold(
       (error) {
+        ref.read(errorLogsNotifierProvider.notifier).addErrorLog('updatePackageInfo',
+            error.toString());
         state = ErrorUserDataState(error: error);
       },
       (_) {
+        ref.read(infoLogsNotifierProvider.notifier).addInfoLog('updatePackageInfo '
+            'success');
         getUserData();
         if (context.mounted){
           Navigator.of(context).pop();

@@ -20,4 +20,6 @@ abstract interface class PhotoRepository {
       final String photoId, final String uid);
 
   Future<Either<Failure, List<Photo>?>> getMyPhoto(String uid);
+
+  Future<Either<Failure, List<Photo>?>> searchPhoto(String query);
 }

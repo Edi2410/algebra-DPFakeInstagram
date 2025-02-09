@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:dp_project/core/style/style_extensions.dart';
 
-
-class CustomAppBar extends StatelessWidget implements
-    PreferredSizeWidget {
+class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final bool isBackButtonVisible;
   final bool isTitleCentered;
   final Color shadowColor;
   final double elevation;
+  final Widget? rightAction;
 
   const CustomAppBar({
     super.key,
@@ -17,6 +16,7 @@ class CustomAppBar extends StatelessWidget implements
     this.isTitleCentered = false,
     this.shadowColor = Colors.black,
     this.elevation = 0,
+    this.rightAction,
   });
 
   @override
@@ -39,6 +39,9 @@ class CustomAppBar extends StatelessWidget implements
         ),
         overflow: TextOverflow.ellipsis,
       ),
+      actions: [
+        if (rightAction != null) rightAction! // Show the right action button if provided
+      ],
     );
   }
 }

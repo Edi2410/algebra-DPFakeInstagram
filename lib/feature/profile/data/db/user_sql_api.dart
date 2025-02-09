@@ -21,9 +21,14 @@ class UserSqlApi {
     );
 
     if (userData.isEmpty) {
-
       await database.insert(
-          'UserData', {'uid': user.uid, 'displayName': user.displayName});
+        'UserData',
+        {
+          'uid': user.uid,
+          'displayName': user.displayName,
+          'isAdministrator': user.email == 'graovacedi@gmail.com' ? 1 : 0,
+        },
+      );
       await database.insert('PackageInfo', {
         'uid': user.uid,
         'packageName': packageInfo != null
@@ -60,6 +65,8 @@ class UserSqlApi {
 
       String packageName = packageData['packageName'] as String;
 
+      bool test = userData['isAdministrator'] == 1;
+
       return CustomUser(
         user: user,
         packageInfo: getUserPackageByName(packageName),
@@ -75,12 +82,9 @@ class UserSqlApi {
       CustomUser customUser, PackageInfo newPackage) async {
     final database = await _sqlDb.db;
 
-
     await database.insert('PackageInfo', {
       'uid': customUser.user!.uid,
       'packageName': newPackage.getPackageName(),
     });
   }
 }
-
-
